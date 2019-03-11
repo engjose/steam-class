@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.steam.dao.UserMapper" >
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.steam.model.po.User">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        <include refid="sql_where"/>
+    </select>
+
+    <sql id="sql_where">
+        <where>
+            <if test="uid != null" >
+                and uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="password != null" >
+                and password = #{password,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null" >
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="nickName != null" >
+                and nick_name = #{nickName,jdbcType=VARCHAR}
+            </if>
+            <if test="headPic != null" >
+                and head_pic = #{headPic,jdbcType=VARCHAR}
+            </if>
+            <if test="point != null" >
+                and point = #{point,jdbcType=INTEGER}
+            </if>
+            <if test="role != null" >
+                and role = #{role,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null" >
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null" >
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>
