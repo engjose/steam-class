@@ -49,9 +49,9 @@ spring:
       #间隔多久才进行一次检测，检测需要关闭的空闲连接(ms)
       time-between-eviction-runs-millis: 60000
       #一个空闲连接在池中最小生存的时间(ms)
-      min-evictable-idle-time-millis: 300000
-      #一个空闲连接在池中最大生存的时间(ms)
-      max-evictable-idle-time-millis: 600000
+#      min-evictable-idle-time-millis: 300000
+#      #一个空闲连接在池中最大生存的时间(ms)
+#      max-evictable-idle-time-millis: 600000
       #是否缓存preparedStatement，也就是PSCache。PSCache内存占用优化对于支持游标的数据库（Oracle、SQL Server、DB2等，MySql需要5.5+）性能提升巨大
       pool-prepared-statements: true
       #指定每个连接上PSCache的大小
