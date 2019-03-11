@@ -31,7 +31,7 @@ public class ErrorHandle {
         } else if (e instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException error = (MethodArgumentNotValidException) e;
             code = ErrorEnum.REQUEST_PARAM_ERR.getCode();
-            message = error.getMessage();
+            message = ErrorEnum.REQUEST_PARAM_ERR.getMessage();
         }
 
 
