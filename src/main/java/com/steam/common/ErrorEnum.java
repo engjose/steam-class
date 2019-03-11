@@ -7,6 +7,7 @@ import lombok.Getter;
  */
 @Getter
 public enum ErrorEnum {
+    REQUEST_PARAM_ERR(40000, "请求参数异常"),
     USER_NAME_OR_PASSWORD_ERR(40001, "用户名或者密码错误"),
     SYS_ERR(500, "系统忙不过来了");
 
