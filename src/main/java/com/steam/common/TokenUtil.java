@@ -10,7 +10,7 @@ import java.util.Random;
 public class TokenUtil {
 
     public static String getToken(String head) {
-        return head + "_" + new SimpleDateFormat("yyyyMMssSSS").format(new Date()) + getFixNum(4);
+        return head + "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + getFixNum(4);
     }
 
     private static String getFixNum(int strLength) {

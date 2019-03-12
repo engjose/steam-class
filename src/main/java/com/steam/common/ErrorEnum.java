@@ -9,7 +9,10 @@ import lombok.Getter;
 public enum ErrorEnum {
     REQUEST_PARAM_ERR(40000, "请求参数不正确"),
     USER_NAME_OR_PASSWORD_ERR(40001, "用户名或者密码错误"),
-    SYS_ERR(500, "系统忙不过来了");
+    LOGIN_REPEAT(40002, "不能重复登录"),
+    USER_EXISTS(40003, "用户已经存在"),
+    SYS_ERR(500, "系统忙不过来了"),
+    USER_STATUS_ERR(5000, "用户状态不正确");
 
     private int code;
     private String message;

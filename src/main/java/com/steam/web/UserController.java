@@ -1,5 +1,6 @@
 package com.steam.web;
 
+import com.steam.model.vo.BaseResponse;
 import com.steam.model.vo.UserLoginRequest;
 import com.steam.model.vo.UserLoginResponse;
 import com.steam.service.IUserService;
@@ -34,7 +35,8 @@ public class UserController {
 
     @ApiOperation("用户登录")
     @PostMapping(value = "/register")
-    public void register(@Valid @RequestBody UserLoginRequest userInfo) {
-
+    public BaseResponse register(@Valid @RequestBody UserLoginRequest userInfo) {
+        userService.register(userInfo);
+        return new BaseResponse();
     }
 }

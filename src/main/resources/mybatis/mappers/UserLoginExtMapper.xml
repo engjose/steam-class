@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.steam.dao.UserLoginMapper" >
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.steam.model.po.UserLoginExt">
+        select
+        <include refid="Base_Column_List"/>
+        from user_login
+        <include refid="sql_where"/>
+    </select>
+
+    <sql id="sql_where">
+        <where>
+            <if test="uid != null" >
+                and uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="token != null" >
+                and token = #{token,jdbcType=VARCHAR}
+            </if>
+            <if test="loginTime != null" >
+                and login_time = #{loginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="expiredTime != null" >
+                and expired_time = #{expiredTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="nowTime != null">
+                and #{nowTime} &gt; login_time and  #{nowTime} &lt; expired_time
+            </if>
+        </where>
+    </sql>
+</mapper>

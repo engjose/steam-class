@@ -1,6 +1,9 @@
 package com.steam.dao;
 
 import com.steam.model.po.UserLogin;
+import com.steam.model.po.UserLoginExt;
+
+import java.util.List;
 
 public interface UserLoginMapper {
     /**
@@ -50,4 +53,6 @@ public interface UserLoginMapper {
      * @mbggenerated Mon Mar 11 21:50:05 CST 2019
      */
     int updateByPrimaryKey(UserLogin record);
+
+    List<UserLogin> selectList(UserLoginExt criteria);
 }

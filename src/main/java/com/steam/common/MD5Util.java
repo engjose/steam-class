@@ -1,8 +1,9 @@
 package com.steam.common;
+
 import java.security.MessageDigest;
 
 /**
- * @author : JOSE 2019/3/11 10:05 PM
+ * Created by panyuanyuan
  */
 public class MD5Util {
 
@@ -43,6 +44,12 @@ public class MD5Util {
         }
         return resultString.toUpperCase();
     }
+
+    public static String MD5EncodeUtf8(String origin, String salt) {
+        origin = origin + salt;
+        return MD5Encode(origin, "utf-8");
+    }
+
 
     private static final String hexDigits[] = {"0", "1", "2", "3", "4", "5",
             "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
