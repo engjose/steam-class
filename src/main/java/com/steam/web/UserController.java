@@ -1,12 +1,13 @@
 package com.steam.web;
 
-import com.steam.model.vo.BaseResponse;
-import com.steam.model.vo.UserLoginRequest;
-import com.steam.model.vo.UserLoginResponse;
+import com.steam.common.ErrorEnum;
+import com.steam.common.SteamException;
+import com.steam.model.vo.*;
 import com.steam.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
@@ -30,6 +31,10 @@ public class UserController {
     @ApiOperation("用户登录")
     @PostMapping(value = "/login")
     public UserLoginResponse login(@Valid @RequestBody UserLoginRequest userInfo) {
+        if (StringUtils.isBlank(userInfo.getRole()) || userInfo.getRole().length() != 1) {
+            throw new SteamException(ErrorEnum.USER_ROLE_ERR.getCode(), ErrorEnum.USER_ROLE_ERR.getMessage());
+        }
+
         return userService.login(userInfo);
     }
 
@@ -38,5 +43,11 @@ public class UserController {
     public BaseResponse register(@Valid @RequestBody UserLoginRequest userInfo) {
         userService.register(userInfo);
         return new BaseResponse();
+    }
+
+    @ApiOperation("用户中心")
+    @PostMapping(value = "/center")
+    public UserCenterResponse getUserInfo(@RequestBody BaseRequest request) {
+        return  userService.getUserCenter(request.getToken());
     }
 }

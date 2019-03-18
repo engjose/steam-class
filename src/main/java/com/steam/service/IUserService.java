@@ -1,5 +1,7 @@
 package com.steam.service;
 
+import com.steam.model.po.User;
+import com.steam.model.vo.UserCenterResponse;
 import com.steam.model.vo.UserLoginRequest;
 import com.steam.model.vo.UserLoginResponse;
 
@@ -21,4 +23,27 @@ public interface IUserService {
      * @return
      */
     void register(UserLoginRequest request);
+
+    /**
+     * check token
+     *
+     * @param token {param-0}: token
+     */
+    String checkToken(String token);
+
+    /**
+     * get user center
+     *
+     * @param token token
+     * @return return userResponse
+     */
+    UserCenterResponse getUserCenter(String token);
+
+    /**
+     * select by uid
+     *
+     * @param uid uid
+     * @return return user po
+     */
+    User selectByUid(String uid);
 }

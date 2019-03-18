@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.steam.dao.PointMapper" >
+    <select id="selectList" parameterType="com.steam.model.po.PointExt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from point
+        <include refid="sql_where"/>
+        order by create_time asc
+    </select>
+
+    <sql id="sql_where">
+        <where>
+            <if test="uid != null" >
+                and uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="source != null" >
+                and source = #{source,jdbcType=VARCHAR}
+            </if>
+            <if test="pointValue != null" >
+                and point_value = #{pointValue,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null" >
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null" >
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>

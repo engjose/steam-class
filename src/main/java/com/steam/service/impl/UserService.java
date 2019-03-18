@@ -3,20 +3,20 @@ package com.steam.service.impl;
 import com.steam.common.*;
 import com.steam.dao.UserLoginMapper;
 import com.steam.dao.UserMapper;
-import com.steam.model.po.User;
-import com.steam.model.po.UserLogin;
-import com.steam.model.po.UserLoginExt;
-import com.steam.model.vo.UserLoginRequest;
-import com.steam.model.vo.UserLoginResponse;
+import com.steam.model.po.*;
+import com.steam.model.vo.*;
+import com.steam.service.IPointService;
 import com.steam.service.IUserService;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +31,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private UserLoginMapper userLoginMapper;
+
+    @Autowired
+    private IPointService pointService;
 
     @Value("${registerPoint}")
     private int registerPoint;
@@ -49,7 +52,7 @@ public class UserService implements IUserService {
         List<User> userList = userMapper.selectList(criteria);
 
         // 检查用户状态等信息
-        loginCheck(userList);
+        loginCheck(userList, request.getRole());
 
         // 产生登录token
         UserLoginResponse response = new UserLoginResponse();
@@ -68,6 +71,7 @@ public class UserService implements IUserService {
         return response;
     }
 
+    @Transactional
     @Override
     public void register(UserLoginRequest request) {
         // 查询用户名是否已经存在
@@ -79,6 +83,7 @@ public class UserService implements IUserService {
         }
 
         // 添加注册用户
+        String uid = TokenUtil.getToken("UID");
         User record = new User();
         record.setNickName(request.getNickName());
         record.setPassword(MD5Util.MD5EncodeUtf8(request.getPassword(), request.getNickName()));
@@ -86,28 +91,105 @@ public class UserService implements IUserService {
         record.setRole(RoleEnum.USER.getCode());
         record.setStatus(UserStatusEnum.ACTIVE.getCode());
         record.setHeadPic(headPic);
-        record.setUid(TokenUtil.getToken("UID"));
+        record.setUid(uid);
         userMapper.insertSelective(record);
+
+        // 添加积分
+        pointService.addPoint(uid, PointSourceEnum.REGISTRY.getCode(),registerPoint);
     }
 
-    private void loginCheck(List<User> userList ) {
+    @Override
+    public String checkToken(String token) {
+        if (StringUtils.isBlank(token)) {
+            throw new SteamException(ErrorEnum.TOKEN_UN_EFFECTIVE.getCode(), ErrorEnum.TOKEN_UN_EFFECTIVE.getMessage());
+        }
+
+        UserLoginExt criteria = new UserLoginExt();
+        criteria.setToken(token);
+        criteria.setNowTime(new Date());
+        List<UserLogin> userLoginList = userLoginMapper.selectList(criteria);
+        if (CollectionUtils.isEmpty(userLoginList)) {
+            throw new SteamException(ErrorEnum.TOKEN_UN_EFFECTIVE.getCode(), ErrorEnum.TOKEN_UN_EFFECTIVE.getMessage());
+        }
+
+        return userLoginList.get(0).getUid();
+    }
+
+    @Override
+    public UserCenterResponse getUserCenter(String token) {
+
+        // 校验token
+        String uid = checkToken(token);
+
+        // 查询用户信息
+        User user = selectByUid(uid);
+
+        // 查询积分明细
+        List<Point> pointList = pointService.getPointList(uid);
+
+        return packageUserCenter(user, pointList);
+    }
+
+    @Override
+    public User selectByUid(String uid) {
+        UserExt criteria = new UserExt();
+        criteria.setUid(uid);
+        List<User> userList = userMapper.selectList(criteria);
+        return CollectionUtils.isEmpty(userList) ? null : userList.get(0);
+    }
+
+    private void loginCheck(List<User> userList, String role) {
         // 用户名或者密码错误
         if (CollectionUtils.isEmpty(userList)) {
             throw new SteamException(ErrorEnum.USER_NAME_OR_PASSWORD_ERR.getCode(), ErrorEnum.USER_NAME_OR_PASSWORD_ERR.getMessage());
         }
 
         // 用户状态已经冻结
-        if (userList.size() != 1 || UserStatusEnum.UN_ACTIVE.getCode().equals(userList.get(0).getStatus())) {
+        User user = userList.get(0);
+        if (userList.size() != 1 || UserStatusEnum.UN_ACTIVE.getCode().equals(user.getStatus())) {
             throw new SteamException(ErrorEnum.USER_STATUS_ERR.getCode(),ErrorEnum.USER_STATUS_ERR.getMessage());
+        }
+
+        // 用户角色不正确
+        if (!user.getRole().equals(role)) {
+            throw new SteamException(ErrorEnum.USER_ROLE_ERR.getCode(), ErrorEnum.USER_ROLE_ERR.getMessage());
         }
 
         // 重复登录
         UserLoginExt criteria = new UserLoginExt();
-        criteria.setUid(userList.get(0).getUid());
+        criteria.setUid(user.getUid());
         criteria.setNowTime(new Date());
         List<UserLogin> loginRecordList = userLoginMapper.selectList(criteria);
         if (!CollectionUtils.isEmpty(loginRecordList)) {
             throw new SteamException(ErrorEnum.LOGIN_REPEAT.getCode(), ErrorEnum.LOGIN_REPEAT.getMessage());
         }
+    }
+
+    private UserCenterResponse packageUserCenter(User user, List<Point> pointList) {
+        UserCenterResponse response = new UserCenterResponse();
+
+        // 用户信息
+        UserResponse userInfo = new UserResponse();
+        userInfo.setNickName(user.getNickName());
+        userInfo.setHeadPic(user.getHeadPic());
+        userInfo.setRegisterDate(DateFormatUtils.format(user.getCreateTime(), "yyyy-MM-dd"));
+
+        // 积分信息
+        PointResponse point = new PointResponse();
+        point.setTotalPoint(user.getPoint());
+        List<PointItem> pointItemList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(pointList)) {
+            pointList.forEach(item -> {
+                PointItem pointItem = new PointItem();
+                pointItem.setValue(item.getPointValue());
+                pointItem.setSource(PointSourceEnum.mappingDesc(item.getSource()));
+                pointItemList.add(pointItem);
+            });
+        }
+        point.setPointList(pointItemList);
+
+        response.setUserInfo(userInfo);
+        response.setPoint(point);
+        return response;
     }
 }
