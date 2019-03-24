@@ -50,4 +50,11 @@ public class UserController {
     public UserCenterResponse getUserInfo(@RequestBody BaseRequest request) {
         return  userService.getUserCenter(request.getToken());
     }
+
+    @ApiOperation("修改密码")
+    @PostMapping(value = "/update/password")
+    public BaseResponse updatePassword(@RequestBody UpdatePasswordRequest request) {
+        userService.updatePassword(request.getToken(), request.getPassword());
+        return new BaseResponse();
+    }
 }

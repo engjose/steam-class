@@ -10,6 +10,7 @@ import com.steam.service.IUserService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -138,6 +139,31 @@ public class UserService implements IUserService {
         return CollectionUtils.isEmpty(userList) ? null : userList.get(0);
     }
 
+    @Override
+    public void updatePassword(String token, String password) {
+        // check token
+        String uid = checkToken(token);
+
+        // 设置登录失效
+        setTokenUnEffective(token);
+
+        // 从新设置密码
+        User user = selectByUid(uid);
+        User record = new User();
+        record.setId(user.getId());
+        record.setPassword(MD5Util.MD5EncodeUtf8(password, user.getNickName()));
+        userMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public UserLogin selectLoginByToken(String token) {
+        UserLoginExt criteria = new UserLoginExt();
+        criteria.setToken(token);
+        criteria.setNowTime(new Date());
+        List<UserLogin> loginList = userLoginMapper.selectList(criteria);
+        return loginList != null && loginList.size() > 0 ? loginList.get(0) : null;
+    }
+
     private void loginCheck(List<User> userList, String role) {
         // 用户名或者密码错误
         if (CollectionUtils.isEmpty(userList)) {
@@ -161,7 +187,7 @@ public class UserService implements IUserService {
         criteria.setNowTime(new Date());
         List<UserLogin> loginRecordList = userLoginMapper.selectList(criteria);
         if (!CollectionUtils.isEmpty(loginRecordList)) {
-            throw new SteamException(ErrorEnum.LOGIN_REPEAT.getCode(), ErrorEnum.LOGIN_REPEAT.getMessage());
+            setTokenUnEffective(loginRecordList.get(0).getToken());
         }
     }
 
@@ -191,5 +217,17 @@ public class UserService implements IUserService {
         response.setUserInfo(userInfo);
         response.setPoint(point);
         return response;
+    }
+
+    private void setTokenUnEffective(String token) {
+        UserLogin userLogin = selectLoginByToken(token);
+        if (userLogin == null) {
+            return;
+        }
+
+        UserLogin record = new UserLogin();
+        BeanUtils.copyProperties(userLogin, record);
+        record.setExpiredTime(new Date());
+        userLoginMapper.updateByPrimaryKey(record);
     }
 }

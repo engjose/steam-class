@@ -1,6 +1,7 @@
 package com.steam.service;
 
 import com.steam.model.po.User;
+import com.steam.model.po.UserLogin;
 import com.steam.model.vo.UserCenterResponse;
 import com.steam.model.vo.UserLoginRequest;
 import com.steam.model.vo.UserLoginResponse;
@@ -46,4 +47,19 @@ public interface IUserService {
      * @return return user po
      */
     User selectByUid(String uid);
+
+    /**
+     * update user password
+     *
+     * @param token token
+     */
+    void updatePassword(String token, String password);
+
+    /**
+     * select login record by token
+     *
+     * @param token param{1}: token
+     * @return user login record
+     */
+    UserLogin selectLoginByToken(String token);
 }

@@ -18,7 +18,7 @@ public class UserLoginRequest extends BaseRequest {
     @ApiModelProperty("用户名")
     private String nickName;
 
-    @Length(min = 6, max = 8, message = "密码必须在6-8位之间")
+    @Length(min = 3, max = 10, message = "密码必须在3-10位之间")
     @ApiModelProperty("密码 MD5加密")
     private String password;
 
