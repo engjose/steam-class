@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.steam.dao.CourseMapper" >
+    <select id="selectList" parameterType="com.steam.model.po.CourseExt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from course
+        <include refid="sql_where"/>
+        <if test='priceSort != null and priceSort == "0"'>
+            order by price asc
+        </if>
+        <if test='priceSort != null and priceSort == "1"'>
+            order by price desc
+        </if>
+        <if test="priceSort == null">
+            order by update_time desc
+        </if>
+    </select>
+    <sql id="sql_where">
+        <where>
+            <if test="courseId != null" >
+                and course_id = #{courseId,jdbcType=VARCHAR}
+            </if>
+            <if test="courseName != null" >
+                and course_name = #{courseName,jdbcType=VARCHAR}
+            </if>
+            <if test="courseInfo != null" >
+                and course_info = #{courseInfo,jdbcType=VARCHAR}
+            </if>
+            <if test="coursePic != null" >
+                and course_pic = #{coursePic,jdbcType=VARCHAR}
+            </if>
+            <if test="courseType != null" >
+                and course_type = #{courseType,jdbcType=VARCHAR}
+            </if>
+            <if test="priceType != null" >
+                and price_type = #{priceType,jdbcType=VARCHAR}
+            </if>
+            <if test="price != null" >
+                and price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="teacherName != null" >
+                and teacher_name = #{teacherName,jdbcType=VARCHAR}
+            </if>
+            <if test="teacherInfo != null" >
+                and teacher_info = #{teacherInfo,jdbcType=VARCHAR}
+            </if>
+            <if test="merchantName != null" >
+                and merchant_name = #{merchantName,jdbcType=VARCHAR}
+            </if>
+            <if test="merchantInfo != null" >
+                and merchant_info = #{merchantInfo,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null" >
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null" >
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="courseNameMatch != null">
+                and course_name like CONCAT('%',#{courseNameMatch},'%')
+            </if>
+        </where>
+    </sql>
+</mapper>

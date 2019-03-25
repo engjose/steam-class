@@ -13,6 +13,7 @@ public enum ErrorEnum {
     USER_EXISTS(40003, "用户已经存在"),
     TOKEN_UN_EFFECTIVE(40010, "无效的token"),
     USER_ROLE_ERR(40004, "用户角色不正确"),
+    SORT_RULE_ERR(40005, "排序规则不正确"),
     SYS_ERR(500, "系统忙不过来了"),
     USER_STATUS_ERR(5000, "用户状态不正确");
 

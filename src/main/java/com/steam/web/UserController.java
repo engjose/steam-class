@@ -53,7 +53,7 @@ public class UserController {
 
     @ApiOperation("修改密码")
     @PostMapping(value = "/update/password")
-    public BaseResponse updatePassword(@RequestBody UpdatePasswordRequest request) {
+    public BaseResponse updatePassword(@Valid @RequestBody UpdatePasswordRequest request) {
         userService.updatePassword(request.getToken(), request.getPassword());
         return new BaseResponse();
     }
