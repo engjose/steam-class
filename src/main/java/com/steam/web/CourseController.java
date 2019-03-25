@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author : JOSE 2019/3/25 9:45 PM
  */
-@Api(tags = "【用户】服务")
+@Api(tags = "【课程】服务")
 @RefreshScope
 @RestController
 @RequestMapping(value = "/course", produces = MediaType.APPLICATION_JSON_VALUE)
