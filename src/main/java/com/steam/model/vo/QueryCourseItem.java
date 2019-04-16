@@ -27,6 +27,9 @@ public class QueryCourseItem {
     @ApiModelProperty("课程封面图片")
     private String coursePic;
 
+    @ApiModelProperty("课程video")
+    private String videoUrl;
+
     @ApiModelProperty("课程类型")
     private String courseType;
 

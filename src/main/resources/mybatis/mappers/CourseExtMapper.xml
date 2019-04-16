@@ -30,6 +30,9 @@
             <if test="coursePic != null" >
                 and course_pic = #{coursePic,jdbcType=VARCHAR}
             </if>
+            <if test="videoUrl != null" >
+                and video_url = #{videoUrl,jdbcType=VARCHAR}
+            </if>
             <if test="courseType != null" >
                 and course_type = #{courseType,jdbcType=VARCHAR}
             </if>
