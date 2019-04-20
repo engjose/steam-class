@@ -259,6 +259,7 @@ public class UserService implements IUserService {
                 orderItem.setCreateTime(DateFormatUtils.format(item.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
                 orderItem.setPriceTypeDesc(PriceTypeEnum.mappingDesc(item.getPriceType()));
                 orderItem.setStatusDesc(OrderStatusEnum.mappingDesc(item.getStatus()));
+                orderItem.setCourseTypeDesc(CourseTypeEnum.mappingDesc(item.getCourseType()));
 
                 if (OrderStatusEnum.DRAFT.getCode().equals(item.getStatus())) {
                     orderInfo.getDraftOrderList().add(orderItem);

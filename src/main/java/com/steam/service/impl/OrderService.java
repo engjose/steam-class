@@ -59,6 +59,9 @@ public class OrderService implements IOrderService {
         record.setPriceType(course.getPriceType());
         record.setStatus(status);
         record.setPrice(course.getPrice());
+        record.setCourseType(course.getCourseType());
+        record.setCoursePic(course.getCoursePic());
+        record.setMerchantName(course.getMerchantName());
         courseOrderMapper.insertSelective(record);
 
         // build return

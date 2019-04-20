@@ -42,6 +42,18 @@ public class OrderItem {
     @ApiModelProperty("价格")
     private BigDecimal price;
 
+    @ApiModelProperty("课程类型")
+    private String courseType;
+
+    @ApiModelProperty("课程类型描述")
+    private String courseTypeDesc;
+
+    @ApiModelProperty("商户")
+    private String merchantName;
+
+    @ApiModelProperty("图片")
+    private String coursePic;
+
     @ApiModelProperty("创建时间")
     private String createTime;
 }

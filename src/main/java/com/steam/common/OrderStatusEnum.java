@@ -7,7 +7,7 @@ import lombok.Getter;
  */
 @Getter
 public enum OrderStatusEnum {
-    DRAFT("0", "代付款"),
+    DRAFT("0", "待付款"),
     PAYED("1", "已完成"),
     CANCEL("2", "已取消");
 
