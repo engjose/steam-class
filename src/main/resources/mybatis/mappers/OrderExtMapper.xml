@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.steam.dao.OrderMapper" >
+    <select id="selectList" parameterType="com.steam.model.po.OrderExt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from order
+        <include refid="sql_where" />
+    </select>
+
+    <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="string">
+        select
+        <include refid="Base_Column_List" />
+        from order where order_id = #{orderId}
+    </select>
+
+    <sql id="sql_where">
+        <where>
+            <if test="orderId != null" >
+                and order_id = #{orderId,jdbcType=VARCHAR}
+            </if>
+            <if test="userId != null" >
+                and user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="courseId != null" >
+                and course_id = #{courseId,jdbcType=VARCHAR}
+            </if>
+            <if test="courseName != null" >
+                and course_name = #{courseName,jdbcType=VARCHAR}
+            </if>
+            <if test="priceType != null" >
+                and price_type = #{priceType,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null" >
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="price != null" >
+                and price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="createTime != null" >
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null" >
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>

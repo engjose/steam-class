@@ -1,5 +1,6 @@
 package com.steam.service;
 
+import com.steam.model.po.Course;
 import com.steam.model.vo.QueryCourseRequest;
 import com.steam.model.vo.QueryCourseResponse;
 
@@ -15,4 +16,11 @@ public interface ICourseService {
      * @return select response
      */
     QueryCourseResponse selectCourseList(QueryCourseRequest request);
+
+    /**
+     * select course by course id
+     *
+     * @return course po
+     */
+    Course selectByCourseId(String courseId);
 }

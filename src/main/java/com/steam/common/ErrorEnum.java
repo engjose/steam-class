@@ -14,8 +14,12 @@ public enum ErrorEnum {
     TOKEN_UN_EFFECTIVE(40010, "无效的token"),
     USER_ROLE_ERR(40004, "用户角色不正确"),
     SORT_RULE_ERR(40005, "排序规则不正确"),
+    COURSE_PRICE_ERR(40006, "课程价格不正确"),
     SYS_ERR(500, "系统忙不过来了"),
-    USER_STATUS_ERR(5000, "用户状态不正确");
+    USER_STATUS_ERR(5000, "用户状态不正确"),
+    ORDER_NOT_EXIST_ERR(5001, "订单不存在"),
+    ORDER_PAY_ERR(5002, "只能支付未付款的订单"),
+    ORDER_PAY_FREE_ERR(5003, "只能支付收费课程");
 
     private int code;
     private String message;

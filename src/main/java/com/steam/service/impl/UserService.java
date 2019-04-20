@@ -5,8 +5,10 @@ import com.steam.dao.UserLoginMapper;
 import com.steam.dao.UserMapper;
 import com.steam.model.po.*;
 import com.steam.model.vo.*;
+import com.steam.service.IOrderService;
 import com.steam.service.IPointService;
 import com.steam.service.IUserService;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -20,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author : JOSE 2019/3/11 8:34 PM
@@ -35,6 +38,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private IPointService pointService;
+
+    @Autowired
+    private IOrderService orderService;
 
     @Value("${registerPoint}")
     private int registerPoint;
@@ -117,6 +123,23 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public String isLogin(String token) {
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
+
+        UserLoginExt criteria = new UserLoginExt();
+        criteria.setToken(token);
+        criteria.setNowTime(new Date());
+        List<UserLogin> userLoginList = userLoginMapper.selectList(criteria);
+        if (CollectionUtils.isEmpty(userLoginList)) {
+            return null;
+        }
+
+        return userLoginList.get(0).getUid();
+    }
+
+    @Override
     public UserCenterResponse getUserCenter(String token) {
 
         // 校验token
@@ -128,7 +151,10 @@ public class UserService implements IUserService {
         // 查询积分明细
         List<Point> pointList = pointService.getPointList(uid);
 
-        return packageUserCenter(user, pointList);
+        // 查询订单信息
+        List<Order> orderList = orderService.selectList(uid);
+
+        return packageUserCenter(user, pointList, orderList);
     }
 
     @Override
@@ -191,7 +217,7 @@ public class UserService implements IUserService {
         }
     }
 
-    private UserCenterResponse packageUserCenter(User user, List<Point> pointList) {
+    private UserCenterResponse packageUserCenter(User user, List<Point> pointList, List<Order> orderList) {
         UserCenterResponse response = new UserCenterResponse();
 
         // 用户信息
@@ -201,21 +227,14 @@ public class UserService implements IUserService {
         userInfo.setRegisterDate(DateFormatUtils.format(user.getCreateTime(), "yyyy-MM-dd"));
 
         // 积分信息
-        PointResponse point = new PointResponse();
-        point.setTotalPoint(user.getPoint());
-        List<PointItem> pointItemList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(pointList)) {
-            pointList.forEach(item -> {
-                PointItem pointItem = new PointItem();
-                pointItem.setValue(item.getPointValue());
-                pointItem.setSource(PointSourceEnum.mappingDesc(item.getSource()));
-                pointItemList.add(pointItem);
-            });
-        }
-        point.setPointList(pointItemList);
+        PointResponse point = buildPointInfo(pointList, user);
+
+        // 订单信息
+        OrderResponse orderInfo = buildOrderInfo(orderList);
 
         response.setUserInfo(userInfo);
         response.setPoint(point);
+        response.setOrderInfo(orderInfo);
         return response;
     }
 
@@ -229,5 +248,46 @@ public class UserService implements IUserService {
         BeanUtils.copyProperties(userLogin, record);
         record.setExpiredTime(new Date());
         userLoginMapper.updateByPrimaryKey(record);
+    }
+
+    private OrderResponse buildOrderInfo(List<Order> orderList) {
+        OrderResponse orderInfo = new OrderResponse();
+        if (!CollectionUtils.isEmpty(orderList)) {
+            for (Order item : orderList) {
+                OrderItem orderItem = new OrderItem();
+                BeanUtils.copyProperties(item, orderItem);
+                orderItem.setCreateTime(DateFormatUtils.format(item.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+                orderItem.setPriceTypeDesc(PriceTypeEnum.mappingDesc(item.getPriceType()));
+                orderItem.setStatusDesc(OrderStatusEnum.mappingDesc(item.getStatus()));
+
+                if (OrderStatusEnum.DRAFT.getCode().equals(item.getStatus())) {
+                    orderInfo.getDraftOrderList().add(orderItem);
+                }
+                else if (OrderStatusEnum.PAYED.getCode().equals(item.getStatus())) {
+                    orderInfo.getPayOrderList().add(orderItem);
+                }
+                else if (OrderStatusEnum.CANCEL.getCode().equals(item.getStatus())){
+                    orderInfo.getCancelOrderList().add(orderItem);
+                }
+            }
+        }
+
+        return orderInfo;
+    }
+
+    private PointResponse buildPointInfo(List<Point> pointList, User user) {
+        PointResponse point = new PointResponse();
+        point.setTotalPoint(user.getPoint());
+        List<PointItem> pointItemList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(pointList)) {
+            pointList.forEach(item -> {
+                PointItem pointItem = new PointItem();
+                pointItem.setValue(item.getPointValue());
+                pointItem.setSource(PointSourceEnum.mappingDesc(item.getSource()));
+                pointItemList.add(pointItem);
+            });
+        }
+        point.setPointList(pointItemList);
+        return point;
     }
 }

@@ -53,4 +53,7 @@ public class QueryCourseItem {
 
     @ApiModelProperty("商户简介信息")
     private String merchantInfo;
+
+    @ApiModelProperty("是否购买")
+    private Boolean isBuy;
 }

@@ -18,4 +18,7 @@ public class UserCenterResponse extends BaseResponse {
 
     @ApiModelProperty("积分信息")
     private PointResponse point;
+
+    @ApiModelProperty("订单信息")
+    private OrderResponse orderInfo;
 }

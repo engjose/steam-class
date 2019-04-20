@@ -33,6 +33,14 @@ public interface IUserService {
     String checkToken(String token);
 
     /**
+     * 校验是否登录
+     *
+     * @param token token
+     * @return 登录了返回uid
+     */
+    String isLogin(String token);
+
+    /**
      * get user center
      *
      * @param token token

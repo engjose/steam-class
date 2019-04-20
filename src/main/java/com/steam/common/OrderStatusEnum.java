@@ -3,24 +3,24 @@ package com.steam.common;
 import lombok.Getter;
 
 /**
- * @author : JOSE 2019/3/19 12:12 AM
+ * @author : JOSE 2019/4/20 4:53 PM
  */
 @Getter
-public enum PointSourceEnum {
-    REGISTRY("0", "新户注册"),
-    ACTIVITY("1", "活动奖励"),
-    BUY_COURSE("2", "购买课程");
+public enum OrderStatusEnum {
+    DRAFT("0", "代付款"),
+    PAYED("1", "已完成"),
+    CANCEL("2", "已取消");
 
     private String code;
     private String desc;
 
-    PointSourceEnum(String code, String desc) {
+    OrderStatusEnum(String code, String desc) {
         this.code = code;
         this.desc = desc;
     }
 
     public static String mappingDesc(String code) {
-        for (PointSourceEnum item : PointSourceEnum.values()) {
+        for (OrderStatusEnum item : OrderStatusEnum.values()) {
             if (item.code.equals(code)) {
                 return item.desc;
             }
