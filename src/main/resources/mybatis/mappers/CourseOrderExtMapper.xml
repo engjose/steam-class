@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.steam.dao.OrderMapper" >
+<mapper namespace="com.steam.dao.CourseOrderMapper" >
     <select id="selectList" parameterType="com.steam.model.po.OrderExt" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from order
+        from course_order
         <include refid="sql_where" />
     </select>
 
     <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="string">
         select
         <include refid="Base_Column_List" />
-        from order where order_id = #{orderId}
+        from course_order where order_id = #{orderId} limit 1
     </select>
 
     <sql id="sql_where">

@@ -7,7 +7,7 @@ import com.steam.common.SteamException;
 import com.steam.dao.CourseMapper;
 import com.steam.model.po.Course;
 import com.steam.model.po.CourseExt;
-import com.steam.model.po.Order;
+import com.steam.model.po.CourseOrder;
 import com.steam.model.vo.QueryCourseItem;
 import com.steam.model.vo.QueryCourseRequest;
 import com.steam.model.vo.QueryCourseResponse;
@@ -75,7 +75,7 @@ public class CourseService implements ICourseService {
             // 是否购买课程
             Boolean isBuy = false;
             if (StringUtils.isNotBlank(uid)) {
-                Order order = iOrderService.selectByUidAndCourseId(uid, item.getCourseId());
+                CourseOrder order = iOrderService.selectByUidAndCourseId(uid, item.getCourseId());
                 isBuy = order != null && !OrderStatusEnum.CANCEL.getCode().equals(order.getStatus());
             }
             resultItem.setIsBuy(isBuy);

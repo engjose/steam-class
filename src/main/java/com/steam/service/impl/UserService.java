@@ -152,7 +152,7 @@ public class UserService implements IUserService {
         List<Point> pointList = pointService.getPointList(uid);
 
         // 查询订单信息
-        List<Order> orderList = orderService.selectList(uid);
+        List<CourseOrder> orderList = orderService.selectList(uid);
 
         return packageUserCenter(user, pointList, orderList);
     }
@@ -217,7 +217,7 @@ public class UserService implements IUserService {
         }
     }
 
-    private UserCenterResponse packageUserCenter(User user, List<Point> pointList, List<Order> orderList) {
+    private UserCenterResponse packageUserCenter(User user, List<Point> pointList, List<CourseOrder> orderList) {
         UserCenterResponse response = new UserCenterResponse();
 
         // 用户信息
@@ -250,10 +250,10 @@ public class UserService implements IUserService {
         userLoginMapper.updateByPrimaryKey(record);
     }
 
-    private OrderResponse buildOrderInfo(List<Order> orderList) {
+    private OrderResponse buildOrderInfo(List<CourseOrder> orderList) {
         OrderResponse orderInfo = new OrderResponse();
         if (!CollectionUtils.isEmpty(orderList)) {
-            for (Order item : orderList) {
+            for (CourseOrder item : orderList) {
                 OrderItem orderItem = new OrderItem();
                 BeanUtils.copyProperties(item, orderItem);
                 orderItem.setCreateTime(DateFormatUtils.format(item.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));

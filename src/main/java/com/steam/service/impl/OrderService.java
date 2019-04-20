@@ -1,9 +1,9 @@
 package com.steam.service.impl;
 
 import com.steam.common.*;
-import com.steam.dao.OrderMapper;
+import com.steam.dao.CourseOrderMapper;
 import com.steam.model.po.Course;
-import com.steam.model.po.Order;
+import com.steam.model.po.CourseOrder;
 import com.steam.model.po.OrderExt;
 import com.steam.model.vo.PlaceOrderRequest;
 import com.steam.model.vo.PlaceOrderResponse;
@@ -34,7 +34,7 @@ public class OrderService implements IOrderService {
     private IPointService iPointService;
 
     @Autowired
-    private OrderMapper orderMapper;
+    private CourseOrderMapper courseOrderMapper;
 
     @Transactional
     @Override
@@ -51,7 +51,7 @@ public class OrderService implements IOrderService {
         // place order
         String status = PriceTypeEnum.CHARGE.getCode().equals(course.getPriceType()) ? OrderStatusEnum.DRAFT.getCode() : OrderStatusEnum.PAYED.getCode();
         String orderId = TokenUtil.getToken("ORDER");
-        Order record = new Order();
+        CourseOrder record = new CourseOrder();
         record.setUserId(uid);
         record.setOrderId(orderId);
         record.setCourseId(course.getCourseId());
@@ -59,7 +59,7 @@ public class OrderService implements IOrderService {
         record.setPriceType(course.getPriceType());
         record.setStatus(status);
         record.setPrice(course.getPrice());
-        orderMapper.insertSelective(record);
+        courseOrderMapper.insertSelective(record);
 
         // build return
         PlaceOrderResponse response = new PlaceOrderResponse();
@@ -73,7 +73,7 @@ public class OrderService implements IOrderService {
         iUserService.checkToken(token);
 
         // check order
-        Order order = orderMapper.selectByOrderId(orderId);
+        CourseOrder order = courseOrderMapper.selectByOrderId(orderId);
         check(order);
 
         // 防止免费课程支付
@@ -82,10 +82,10 @@ public class OrderService implements IOrderService {
         }
 
         // pay order
-        Order record = new Order();
+        CourseOrder record = new CourseOrder();
         record.setId(order.getId());
         record.setStatus(OrderStatusEnum.PAYED.getCode());
-        orderMapper.updateByPrimaryKeySelective(record);
+        courseOrderMapper.updateByPrimaryKeySelective(record);
 
         // send point
         iPointService.addPoint(order.getUserId(), PointSourceEnum.BUY_COURSE.getCode(), 10);
@@ -97,34 +97,34 @@ public class OrderService implements IOrderService {
         iUserService.checkToken(token);
 
         // check order
-        Order order = orderMapper.selectByOrderId(orderId);
+        CourseOrder order = courseOrderMapper.selectByOrderId(orderId);
         check(order);
 
         // cancel order
-        Order record = new Order();
+        CourseOrder record = new CourseOrder();
         record.setId(order.getId());
         record.setStatus(OrderStatusEnum.CANCEL.getCode());
-        orderMapper.updateByPrimaryKeySelective(record);
+        courseOrderMapper.updateByPrimaryKeySelective(record);
     }
 
     @Override
-    public Order selectByUidAndCourseId(String uid, String courseId) {
+    public CourseOrder selectByUidAndCourseId(String uid, String courseId) {
         OrderExt criteria = new OrderExt();
         criteria.setCourseId(courseId);
         criteria.setUserId(uid);
-        List<Order> orderList = orderMapper.selectList(criteria);
+        List<CourseOrder> orderList = courseOrderMapper.selectList(criteria);
 
         return CollectionUtils.isEmpty(orderList) ? null : orderList.get(0);
     }
 
     @Override
-    public List<Order> selectList(String uid) {
+    public List<CourseOrder> selectList(String uid) {
         OrderExt criteria = new OrderExt();
         criteria.setUserId(uid);
-        return orderMapper.selectList(criteria);
+        return courseOrderMapper.selectList(criteria);
     }
 
-    private void check(Order order) {
+    private void check(CourseOrder order) {
         if (null == order) {
             throw new SteamException(ErrorEnum.ORDER_NOT_EXIST_ERR.getCode(), ErrorEnum.ORDER_NOT_EXIST_ERR.getMessage());
         }

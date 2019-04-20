@@ -1,6 +1,6 @@
 package com.steam.service;
 
-import com.steam.model.po.Order;
+import com.steam.model.po.CourseOrder;
 import com.steam.model.vo.PlaceOrderRequest;
 import com.steam.model.vo.PlaceOrderResponse;
 
@@ -39,7 +39,7 @@ public interface IOrderService {
      * @param courseId course id
      * @return order
      */
-    Order selectByUidAndCourseId(String uid, String courseId);
+    CourseOrder selectByUidAndCourseId(String uid, String courseId);
 
     /**
      * select list
@@ -47,5 +47,5 @@ public interface IOrderService {
      * @param uid uid
      * @return order list
      */
-    List<Order> selectList(String uid);
+    List<CourseOrder> selectList(String uid);
 }
