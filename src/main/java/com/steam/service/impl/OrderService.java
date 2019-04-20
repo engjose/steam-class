@@ -44,7 +44,7 @@ public class OrderService implements IOrderService {
 
         // select course info
         Course course = iCourseService.selectByCourseId(request.getCourseId());
-        if (PriceTypeEnum.CHARGE.getCode().equals(course.getPriceType()) && !course.getPrice().equals(request.getPrice())) {
+        if (PriceTypeEnum.CHARGE.getCode().equals(course.getPriceType()) && course.getPrice().compareTo(request.getPrice()) != 0) {
             throw new SteamException(ErrorEnum.COURSE_PRICE_ERR.getCode(), ErrorEnum.COURSE_PRICE_ERR.getMessage());
         }
 
