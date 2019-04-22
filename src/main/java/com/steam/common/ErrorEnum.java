@@ -15,6 +15,7 @@ public enum ErrorEnum {
     USER_ROLE_ERR(40004, "用户角色不正确"),
     SORT_RULE_ERR(40005, "排序规则不正确"),
     COURSE_PRICE_ERR(40006, "课程价格不正确"),
+    COURSE_ID_ERR(40007, "课程编号不能为空"),
     SYS_ERR(500, "系统忙不过来了"),
     USER_STATUS_ERR(5000, "用户状态不正确"),
     ORDER_NOT_EXIST_ERR(5001, "订单不存在"),

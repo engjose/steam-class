@@ -21,4 +21,7 @@ public class QueryCourseRequest extends BaseRequest {
 
     @ApiModelProperty("按照价格排序规则: 0表示升序, 1表示降序")
     private String priceSort;
+
+    @ApiModelProperty("课程ID")
+    private String courseId;
 }

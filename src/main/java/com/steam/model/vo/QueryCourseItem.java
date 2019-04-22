@@ -39,6 +39,9 @@ public class QueryCourseItem {
     @ApiModelProperty("价格类型: 0-免费 1-收费")
     private String priceType;
 
+    @ApiModelProperty("价格类型: 0-免费 1-收费")
+    private String priceTypeDesc;
+
     @ApiModelProperty("课程价格")
     private BigDecimal price;
 

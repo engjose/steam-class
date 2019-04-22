@@ -60,6 +60,16 @@ public class CourseService implements ICourseService {
         return CollectionUtils.isEmpty(courseList) ? null : courseList.get(0);
     }
 
+    @Override
+    public Boolean isBuy(String uid, String courseId) {
+        if (StringUtils.isNotBlank(uid)) {
+            CourseOrder order = iOrderService.selectByUidAndCourseId(uid, courseId);
+            return order != null && !OrderStatusEnum.CANCEL.getCode().equals(order.getStatus());
+        }
+
+        return false;
+    }
+
     private QueryCourseResponse packageCourseResponse(List<Course> courseList, String uid) {
         QueryCourseResponse response = new QueryCourseResponse();
         if (courseList == null || courseList.size() == 0) {
@@ -73,12 +83,7 @@ public class CourseService implements ICourseService {
             resultItem.setCourseTypeDesc(CourseTypeEnum.mappingDesc(item.getCourseType()));
 
             // 是否购买课程
-            Boolean isBuy = false;
-            if (StringUtils.isNotBlank(uid)) {
-                CourseOrder order = iOrderService.selectByUidAndCourseId(uid, item.getCourseId());
-                isBuy = order != null && !OrderStatusEnum.CANCEL.getCode().equals(order.getStatus());
-            }
-            resultItem.setIsBuy(isBuy);
+            resultItem.setIsBuy(isBuy(uid, item.getCourseId()));
 
             resultList.add(resultItem);
         });

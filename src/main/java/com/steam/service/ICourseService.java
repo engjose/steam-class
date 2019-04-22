@@ -1,6 +1,7 @@
 package com.steam.service;
 
 import com.steam.model.po.Course;
+import com.steam.model.vo.QueryCourseItem;
 import com.steam.model.vo.QueryCourseRequest;
 import com.steam.model.vo.QueryCourseResponse;
 
@@ -23,4 +24,6 @@ public interface ICourseService {
      * @return course po
      */
     Course selectByCourseId(String courseId);
+
+    Boolean isBuy(String uid, String courseId);
 }
