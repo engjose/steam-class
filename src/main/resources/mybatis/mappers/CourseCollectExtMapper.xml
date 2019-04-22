@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.steam.dao.CourseCollectMapper" >
+    <select id="selectList" parameterType="com.steam.model.po.CourseCollectExt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from course_collect
+        <include refid="sql_where"/>
+    </select>
+
+    <select id="selectOne" parameterType="com.steam.model.po.CourseCollectExt" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from course_collect
+        <include refid="sql_where"/>
+        limit 1
+    </select>
+
+    <sql id="sql_where">
+        <where>
+            <if test="courseId != null" >
+                and course_id = #{courseId,jdbcType=VARCHAR}
+            </if>
+            <if test="userId != null" >
+                and user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="isCollect != null" >
+                and is_collect = #{isCollect,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null" >
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null" >
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>

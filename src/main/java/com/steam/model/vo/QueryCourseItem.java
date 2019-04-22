@@ -59,4 +59,7 @@ public class QueryCourseItem {
 
     @ApiModelProperty("是否购买")
     private Boolean isBuy;
+
+    @ApiModelProperty("是否收藏 0-未收藏 1-已收藏")
+    private String isCollect = "0";
 }

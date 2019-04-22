@@ -55,7 +55,7 @@
                <!--selectByExampleQueryId="false">-->
             <!--<generatedKey column="id" sqlStatement="JDBC" identity="true" />-->
         <!--</table>-->
-        <table tableName="course_order" domainObjectName="CourseOrder" enableCountByExample="false" enableUpdateByExample="false"
+        <table tableName="course_collect" domainObjectName="CourseCollect" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
             <generatedKey column="id" sqlStatement="JDBC" identity="true" />
