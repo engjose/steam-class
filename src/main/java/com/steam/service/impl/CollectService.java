@@ -86,6 +86,7 @@ public class CollectService implements ICollectService {
             QueryCourseItem courseItem = new QueryCourseItem();
             Course course = courseService.selectByCourseId(item.getCourseId());
             BeanUtils.copyProperties(course, courseItem);
+            courseItem.setIsBuy(courseService.isBuy(uid, item.getCourseId()));
             courseItem.setIsCollect(CollectEnum.COLLECT.getCode());
             courseItem.setPriceTypeDesc(PriceTypeEnum.mappingDesc(course.getPriceType()));
             courseItem.setCourseTypeDesc(CourseTypeEnum.mappingDesc(course.getCourseType()));
