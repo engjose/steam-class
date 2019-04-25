@@ -11,6 +11,7 @@ import com.steam.model.po.CourseOrder;
 import com.steam.model.vo.QueryCourseItem;
 import com.steam.model.vo.QueryCourseRequest;
 import com.steam.model.vo.QueryCourseResponse;
+import com.steam.service.ICollectService;
 import com.steam.service.ICourseService;
 import com.steam.service.IOrderService;
 import com.steam.service.IUserService;
@@ -38,6 +39,9 @@ public class CourseService implements ICourseService {
     @Autowired
     private IUserService iUserService;
 
+    @Autowired
+    private ICollectService iCollectService;
+
     @Override
     public QueryCourseResponse selectCourseList(QueryCourseRequest request) {
         CourseExt criteria = new CourseExt();
@@ -64,7 +68,7 @@ public class CourseService implements ICourseService {
     public Boolean isBuy(String uid, String courseId) {
         if (StringUtils.isNotBlank(uid)) {
             CourseOrder order = iOrderService.selectByUidAndCourseId(uid, courseId);
-            return order != null && !OrderStatusEnum.CANCEL.getCode().equals(order.getStatus());
+            return order != null && OrderStatusEnum.PAYED.getCode().equals(order.getStatus());
         }
 
         return false;
@@ -84,6 +88,7 @@ public class CourseService implements ICourseService {
 
             // 是否购买课程
             resultItem.setIsBuy(isBuy(uid, item.getCourseId()));
+            resultItem.setIsCollect(iCollectService.isCollect(uid, item.getCourseId()));
 
             resultList.add(resultItem);
         });

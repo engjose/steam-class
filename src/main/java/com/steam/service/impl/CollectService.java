@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -99,6 +100,19 @@ public class CollectService implements ICollectService {
     @Override
     public CourseCollect selectOne(CourseCollectExt record) {
         return courseCollectMapper.selectOne(record);
+    }
+
+    @Override
+    public String isCollect(String uid, String courseId) {
+        if (null == uid || uid.trim().equals("")) {
+            return "0";
+        }
+
+        CourseCollectExt criteria = new CourseCollectExt();
+        criteria.setUserId(uid);
+        criteria.setCourseId(courseId);
+        criteria.setIsCollect(CollectEnum.COLLECT.getCode());
+        return !CollectionUtils.isEmpty(courseCollectMapper.selectList(criteria)) ? "1" : "0";
     }
 
 }

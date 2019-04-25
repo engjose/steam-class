@@ -8,6 +8,7 @@ import com.steam.model.po.Course;
 import com.steam.model.vo.QueryCourseItem;
 import com.steam.model.vo.QueryCourseRequest;
 import com.steam.model.vo.QueryCourseResponse;
+import com.steam.service.ICollectService;
 import com.steam.service.ICourseService;
 import com.steam.service.IUserService;
 import io.swagger.annotations.Api;
@@ -39,6 +40,9 @@ public class CourseController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private ICollectService iCollectService;
+
     @ApiOperation("查询课程列表")
     @PostMapping(value = "/list")
     QueryCourseResponse selectCourseList(@RequestBody QueryCourseRequest request) {
@@ -66,6 +70,7 @@ public class CourseController {
         QueryCourseItem result = new QueryCourseItem();
         BeanUtils.copyProperties(course, result);
         result.setIsBuy(courseService.isBuy(uid, course.getCourseId()));
+        result.setIsCollect(iCollectService.isCollect(uid, course.getCourseId()));
         result.setCourseTypeDesc(CourseTypeEnum.mappingDesc(course.getCourseType()));
         result.setPriceTypeDesc(PriceTypeEnum.mappingDesc(course.getPriceType()));
         return result;

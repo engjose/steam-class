@@ -41,4 +41,6 @@ public interface ICollectService {
      * @return collect course
      */
     CourseCollect selectOne(CourseCollectExt record);
+
+    String isCollect(String uid, String courseId);
 }
