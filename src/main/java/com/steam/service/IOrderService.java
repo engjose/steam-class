@@ -39,7 +39,7 @@ public interface IOrderService {
      * @param courseId course id
      * @return order
      */
-    CourseOrder selectByUidAndCourseId(String uid, String courseId);
+    List<CourseOrder> selectByUidAndCourseId(String uid, String courseId);
 
     /**
      * select list

@@ -19,8 +19,10 @@ public enum ErrorEnum {
     SYS_ERR(500, "系统忙不过来了"),
     USER_STATUS_ERR(5000, "用户状态不正确"),
     ORDER_NOT_EXIST_ERR(5001, "订单不存在"),
-    ORDER_PAY_ERR(5002, "只能支付未付款的订单"),
-    ORDER_PAY_FREE_ERR(5003, "只能支付收费课程");
+    ORDER_PAY_ERR(5002, "只能操作未付款的订单"),
+    ORDER_PAY_FREE_ERR(5003, "只能支付收费课程"),
+    ORDER_RE_PLACE_ORDER_ERR(5004, "不能重复下单"),
+    ORDER_EXIST_PLACE_ORDER_ERR(5005, "存在待支付的订单,请前往支付");;
 
     private int code;
     private String message;

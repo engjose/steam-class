@@ -48,6 +48,9 @@ public class OrderService implements IOrderService {
             throw new SteamException(ErrorEnum.COURSE_PRICE_ERR.getCode(), ErrorEnum.COURSE_PRICE_ERR.getMessage());
         }
 
+        // check placeOrder
+        checkPlaceOrder(uid, request.getCourseId());
+
         // place order
         String status = PriceTypeEnum.CHARGE.getCode().equals(course.getPriceType()) ? OrderStatusEnum.DRAFT.getCode() : OrderStatusEnum.PAYED.getCode();
         String orderId = TokenUtil.getToken("ORDER");
@@ -111,13 +114,13 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public CourseOrder selectByUidAndCourseId(String uid, String courseId) {
+    public List<CourseOrder> selectByUidAndCourseId(String uid, String courseId) {
         OrderExt criteria = new OrderExt();
         criteria.setCourseId(courseId);
         criteria.setUserId(uid);
         List<CourseOrder> orderList = courseOrderMapper.selectList(criteria);
 
-        return CollectionUtils.isEmpty(orderList) ? null : orderList.get(0);
+        return orderList;
     }
 
     @Override
@@ -134,6 +137,21 @@ public class OrderService implements IOrderService {
 
         if (!OrderStatusEnum.DRAFT.getCode().equals(order.getStatus())) {
             throw new SteamException(ErrorEnum.ORDER_PAY_ERR.getCode(), ErrorEnum.ORDER_PAY_ERR.getMessage());
+        }
+    }
+
+    private void checkPlaceOrder(String uid, String courseId) {
+        List<CourseOrder> orderList = selectByUidAndCourseId(uid, courseId);
+        if (!CollectionUtils.isEmpty(orderList)) {
+            for (CourseOrder order : orderList) {
+                if (OrderStatusEnum.PAYED.getCode().equals(order.getStatus())) {
+                    throw new SteamException(ErrorEnum.ORDER_RE_PLACE_ORDER_ERR.getCode(), ErrorEnum.ORDER_RE_PLACE_ORDER_ERR.getMessage());
+                }
+
+                if (OrderStatusEnum.DRAFT.getCode().equals(order.getStatus())) {
+                    throw new SteamException(ErrorEnum.ORDER_EXIST_PLACE_ORDER_ERR.getCode(), ErrorEnum.ORDER_EXIST_PLACE_ORDER_ERR.getMessage());
+                }
+            }
         }
     }
 }

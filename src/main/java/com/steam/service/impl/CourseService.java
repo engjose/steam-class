@@ -67,8 +67,16 @@ public class CourseService implements ICourseService {
     @Override
     public Boolean isBuy(String uid, String courseId) {
         if (StringUtils.isNotBlank(uid)) {
-            CourseOrder order = iOrderService.selectByUidAndCourseId(uid, courseId);
-            return order != null && OrderStatusEnum.PAYED.getCode().equals(order.getStatus());
+            List<CourseOrder> orderList = iOrderService.selectByUidAndCourseId(uid, courseId);
+            if (CollectionUtils.isEmpty(orderList)) {
+                return false;
+            }
+
+            for (CourseOrder order : orderList) {
+                if (OrderStatusEnum.PAYED.getCode().equals(order.getStatus())) {
+                    return true;
+                }
+            }
         }
 
         return false;
