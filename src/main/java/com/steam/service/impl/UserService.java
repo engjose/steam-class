@@ -94,7 +94,6 @@ public class UserService implements IUserService {
         User record = new User();
         record.setNickName(request.getNickName());
         record.setPassword(MD5Util.MD5EncodeUtf8(request.getPassword(), request.getNickName()));
-        record.setPoint(registerPoint);
         record.setRole(RoleEnum.USER.getCode());
         record.setStatus(UserStatusEnum.ACTIVE.getCode());
         record.setHeadPic(headPic);
